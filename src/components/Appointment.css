@@ -57,3 +57,6 @@
     color: white;
     max-height: 60vh;
   }  
+  .error-msg{
+    color: red;
+  }

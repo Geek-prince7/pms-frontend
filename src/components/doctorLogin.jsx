@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './PatientLogin.css';
+import './doctorLogin.css';
 import Header from './header';
+import DoctorHeader from './doctorHeader';
 
-const PatientLogin = () => {
+const DoctorLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isError,setIsError]=useState(false)
@@ -15,15 +16,15 @@ const PatientLogin = () => {
       const formData = new URLSearchParams();
       formData.append('email', email);
       formData.append('password', password);
-      setIsError(false);
-      const response = await axios.post('http://localhost:5000/patient/login',formData,{headers:{
+      setIsError(false)
+      const response = await axios.post('http://localhost:5000/doctor/login',formData,{headers:{
         'Content-Type':'application/x-www-form-urlencoded'
       }});
 
       // Handle successful login response
       console.log(response.data);
       localStorage.setItem('token',response.data.data.token)
-      window.location.href='/'
+      window.location.href='/doctor'
     } catch (error) {
       // Handle login error
       setIsError(true)
@@ -33,9 +34,9 @@ const PatientLogin = () => {
 
   return (
     <>
-    <Header/>
+    <DoctorHeader/>
     <div className="login-container">
-      <h1>Patient Login</h1>
+      <h1>Doctor Login</h1>
       {isError? (<h3 className='error-msg'>Invalid email/password</h3>):(<p></p>)}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -48,10 +49,11 @@ const PatientLogin = () => {
         </div>
         <button type="submit">Login</button>
       </form>
-      <p><a href='/doctor/login'>doctor login</a></p>
+      <p><a href='/doctor/signup'>Register doctor</a></p>
+      <p><a href='/login'>Patient login</a></p>
     </div>
     </>
   );
 };
 
-export default PatientLogin;
+export default DoctorLogin;

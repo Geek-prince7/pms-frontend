@@ -14,6 +14,7 @@ const NewAppointment = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [appointmentDetails, setAppointmentDetails] = useState(null);
   const [timeSlots, setTimeSlots] = useState([]);
+  const [isError,setIsError]=useState(false)
 
   useEffect(() => {
     fetchDoctors();
@@ -39,7 +40,7 @@ const NewAppointment = () => {
       formData.append('patient_phone',patientPhone);
       formData.append('patient_name',patientName);
       formData.append('prescription',presc)
-      
+      setIsError(false)
 
       const response = await axios.post('http://localhost:5000/appointment/new', formData, {
         headers: {
@@ -52,6 +53,7 @@ const NewAppointment = () => {
       setAppointmentDetails(appointment);
       setIsPopupOpen(true);
     } catch (error) {
+      setIsError(true)
       console.error(error.response.data);
     }
   };
@@ -100,6 +102,7 @@ const NewAppointment = () => {
     <Header/>
     <div className="new-appointment-container">
       <h1>New Appointment</h1>
+      {isError? (<h3 className='error-msg'>This slot is booked! Try another</h3>):(<p></p>)}
       <form onSubmit={handleSubmit} encType='multipart/form-data'>
         <div className="form-group">
           <label>Patient name:</label>
@@ -115,7 +118,7 @@ const NewAppointment = () => {
             <option value="">Select a doctor</option>
             {doctors.map((doctor) => (
               <option key={doctor._id} value={doctor._id}>
-                {`${doctor.name} (${doctor.speciality.specialization}) ${doctor.experience} + exp`}
+                {`${doctor.name} (${doctor.speciality.specialization?doctor.speciality.specialization:doctor.speciality.type}) ${doctor.experience} + exp`}
               </option>
             ))}
           </select>
@@ -142,6 +145,7 @@ const NewAppointment = () => {
         </div>
         <button type="submit">Create Appointment</button>
       </form>
+      
 
       {isPopupOpen && (
         <div className="popup-container">
